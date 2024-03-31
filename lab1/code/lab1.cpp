@@ -206,29 +206,23 @@ void execute(std::vector<int>& V, const std::vector<int>& res) {
 
 // Iterative algorithm
 void TND004::stable_partition_iterative(std::vector<int>& V, std::function<bool(int)> p) {
-	// IMPLEMENT before Lab1 HA
+// IMPLEMENT before Lab1 HA
 
-	//vectors for elements == p and elements != p
-	std::vector<int> p_true; 
-	std::vector<int>p_false; 
+//index of last element satisfying p
+std::size_t prev_true = 0; 
 
-	//store elements from v in p_true or p_false
-	for (int e : V) {
-		if (p(e)) {
-			p_true.push_back(e); 
+	//loop V
+	for (size_t i = 0; i < V.size(); ++i) {
+
+		//if current element i satisfies p, move i to after previous true element prev_true
+		if (p(V[i])) { 
+			for (std::size_t j = i; j > prev_true; --j) {
+				std::swap(V[j], V[j - 1]);
+			}
+
+		//move last true index every time new true element i has been encountered 
+		++prev_true; 
 		}
-		else {
-			p_false.push_back(e); 
-		}
-	}
-
-	//overwrite elements in V with first true and then false 
-	std::size_t index = 0; 
-	for (int e : p_true) {
-		V[index++] = e; 
-	}
-	for (int e : p_false) {
-		V[index++] = e; 
 	}
 
 }
