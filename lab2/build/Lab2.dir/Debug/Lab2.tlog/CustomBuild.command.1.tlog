@@ -1,0 +1,10 @@
+^C:\USERS\ALMA\DESKTOP\SKOLAN\PROGRAMMERING\TND004\LABS\LAB2\LAB2\CODE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Alma/Desktop/Skolan/programmering/TND004/labs/lab2/lab2/code -BC:/Users/Alma/Desktop/Skolan/programmering/TND004/labs/lab2/lab2/build --check-stamp-file C:/Users/Alma/Desktop/Skolan/programmering/TND004/labs/lab2/lab2/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

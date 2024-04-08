@@ -1,0 +1,6 @@
+﻿  set.cpp
+C:\Users\Alma\Desktop\Skolan\programmering\TND004\labs\lab2\lab2\code\set.cpp(226,33): warning C4100: 'S': unreferenced formal parameter
+C:\Users\Alma\Desktop\Skolan\programmering\TND004\labs\lab2\lab2\code\set.cpp(235,33): warning C4100: 'S': unreferenced formal parameter
+C:\Users\Alma\Desktop\Skolan\programmering\TND004\labs\lab2\lab2\code\set.cpp(244,33): warning C4100: 'S': unreferenced formal parameter
+LINK : warning LNK4300: ignoring '/INCREMENTAL' because input module contains ASAN metadata
+  Lab2.vcxproj -> C:\Users\Alma\Desktop\Skolan\programmering\TND004\labs\lab2\lab2\build\Debug\Lab2.exe

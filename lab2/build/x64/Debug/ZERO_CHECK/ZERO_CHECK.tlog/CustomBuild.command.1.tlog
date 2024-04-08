@@ -1,0 +1,10 @@
+^C:\USERS\ALMA\DESKTOP\SKOLAN\PROGRAMMERING\TND004\LABS\LAB2\LAB2\BUILD\CMAKEFILES\8F0CD1708D5C817CC33523993BE096B1\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/Alma/Desktop/Skolan/programmering/TND004/labs/lab2/lab2/code -BC:/Users/Alma/Desktop/Skolan/programmering/TND004/labs/lab2/lab2/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/Alma/Desktop/Skolan/programmering/TND004/labs/lab2/lab2/build/TND004-Lab-2.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
