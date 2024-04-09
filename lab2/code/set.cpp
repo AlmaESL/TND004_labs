@@ -33,10 +33,8 @@ Set::Set() : counter{ 0 } {
 Set::Set(int val) : Set{} {  // create an empty list
 	// IMPLEMENT before Lab2 HA
 
-	//use the insert aux-function to insert val 
-	insert_value(val);
-
-
+	// create and insert nodes of val (from the back) using the insert node function 
+	insert_node(tail->prev, val); 
 }
 
 /*
@@ -46,9 +44,16 @@ Set::Set(int val) : Set{} {  // create an empty list
 Set::Set(const std::vector<int>& list_of_values) : Set{} {  // create an empty list
 	// IMPLEMENT before Lab2 HA
 
-	//loop vector and insert each element using the insert_value aux-function 
+	Node* ptr = head; 
+
+	// 1) iterate elements in vector
 	for (int e : list_of_values) {
-		insert_value(e);
+
+		// 2) insert each element e as a new node using the insert_node function
+		insert_node(ptr, e);
+
+		// 3) step forth in this set
+		ptr = ptr->next; 
 	}
 }
 
@@ -60,18 +65,17 @@ Set::Set(const std::vector<int>& list_of_values) : Set{} {  // create an empty l
 Set::Set(const Set& S) : Set{} {  // create an empty list
 	// IMPLEMENT before Lab2 HA
 
-	// 1) point at first node in S 
-	Node* s_ptr = S.head->next;
 
+	Node* s_ptr = S.head->next; 
 
-	// 2) iterate S 
+	// 1) iterate S
 	while (s_ptr != S.tail) {
 
-		// 3) insert current s value into this
-		insert_value(s_ptr->value);
+		// 2) use the insert_node function to insert value os into this from the back 
+		insert_node(tail->prev, s_ptr->value);
 
-		// 4) step forth in S
-		s_ptr = s_ptr->next;
+		// 3) step forth in S
+		s_ptr = s_ptr->next; 
 	}
 
 }
@@ -83,19 +87,18 @@ Set::Set(const Set& S) : Set{} {  // create an empty list
 void Set::make_empty() {
 	// IMPLEMENT before Lab2 HA
 
-	// 1) point at first node 
 	Node* ptr = head->next;
 
-	// 2) Traverse set and use remove to delete each node encountered 
+	// 1) Traverse set and use remove to delete each node encountered 
 	while (ptr != tail) {
 
-		// 3) create a temp node  
+		// 2) create a temp node  
 		Node* temp = ptr->next;
 
-		// 4) delete ptr node
+		// 3) delete ptr node
 		remove_node(ptr);
 
-		// 5) new current node is the next node in the set
+		// 4) new current node is the next node in the set
 		ptr = temp;
 	}
 
@@ -107,10 +110,10 @@ void Set::make_empty() {
 Set::~Set() {
 	// IMPLEMENT before Lab2 HA
 
-	// use the make empty to delete all elements 
+	// 1) use the make empty to delete all elements 
 	make_empty();
 
-	//delete head and tail 
+	// 2) delete head and tail 
 	delete head;
 	delete tail;
 }
@@ -123,12 +126,12 @@ Set::~Set() {
 Set& Set::operator=(Set S) {
 	// IMPLEMENT before Lab2 HA
 
-	//copy swap idiom on heads, tails and counters -> constant swaps on single vriables 
+	//copy swap idiom on heads, tails and counters -> constant swaps since swaps on single variables 
 	std::swap(head, S.head);
 	std::swap(tail, S.tail);
 	std::swap(counter, S.counter);
 
-	return *this; 
+	return *this;
 
 }
 
@@ -141,17 +144,16 @@ Set& Set::operator=(Set S) {
  */
 bool Set::is_member(int val) const {
 	// IMPLEMENT before Lab2 HA
-	
-	// 1) point at first node 
-	Node* ptr = head->next; 
 
-	// 2) traverse set and search for val
+	Node* ptr = head->next;
+
+	// 1) traverse set and search for val
 	while (ptr != tail && ptr->value != val) {
-		ptr = ptr->next; 
+		ptr = ptr->next;
 	}
 
-	// 3) ptr != tail means val is found 
-	return (ptr != tail); 
+	// 2) ptr != tail means val is found 
+	return (ptr != tail);
 }
 
 /*
@@ -161,15 +163,30 @@ bool Set::is_member(int val) const {
  */
 bool Set::operator==(const Set& S) const {
 	// IMPLEMENT before Lab2 HA
-	
 
-	// returns true if S and this have the same size and <=> returns equivalent 
+	// 1) sets must have same size for ==
 	if (counter != S.counter) {
-		return false; 
+		return false;
 	}
 
-	return ((*this <=> S) == std::partial_ordering::equivalent); 
 
+	Node* this_ptr = head->next;
+	Node* s_ptr = S.head->next;
+
+	// 2) iterate this
+	while (this_ptr != tail) {
+
+		// 3) compare and if certain values aren't identical, == is false
+		if (this_ptr->value != s_ptr->value) {
+			return false;
+		}
+
+		this_ptr = this_ptr->next;
+		s_ptr = s_ptr->next;
+	}
+
+	// 4) if while-loop stops without return, all elements are identical and == is true
+	return true;
 }
 
 /*
@@ -181,42 +198,48 @@ bool Set::operator==(const Set& S) const {
  */
 std::partial_ordering Set::operator<=>(const Set& S) const {
 	// IMPLEMENT before Lab2 HA
-	
-	// 1) pointers at first elements of S and this
-	Node* s_ptr = S.head->next; 
-	Node* this_ptr = head->next; 
 
-	// 2) traverse both sets 
-	while (s_ptr != S.tail && this_ptr != tail) {
-
-		// 3) compare the current values -> if this < S -> return less
-		if (this_ptr->value < s_ptr->value) {
-			return std::partial_ordering::less; 
-		}
-
-		// 4) compare the current values -> if this > S -> return greater 
-		if (this_ptr->value > s_ptr->value) {
-			return std::partial_ordering::greater; 
-		}
-
-		// 5) step forth in both sets 
-		s_ptr = s_ptr->next; 
-		this_ptr = this_ptr->next; 
+	// 1) test for equivalance, using operator ==
+	if (*this == S) {
+		return std::partial_ordering::equivalent; 
 	}
 
-	// 6) if s is smaller than this -> greater 
-	if (s_ptr != S.tail) {
+	
+	Node* this_ptr = head->next; 
+	Node* s_ptr = S.head->next; 
+
+	// 2) counter for identical values 
+	std::size_t counter_identical{ 0 }; 
+
+	// 3) loop sets until one is ended
+	while (this_ptr != tail->next && s_ptr != S.tail->next) {
+
+		// 4) step forth in set with smallest value
+		if (this_ptr->value < s_ptr->value) {
+			this_ptr = this_ptr->next; 
+		}
+		else if (this_ptr->value > s_ptr->value) {
+			s_ptr = s_ptr->next; 
+		}
+		// 5) if values are same, step forth in both and increment identical counter
+		else if (this_ptr->value == s_ptr->value) {
+			this_ptr = this_ptr->next; 
+			s_ptr = s_ptr->next; 
+			++counter_identical; 
+		}
+
+	}
+
+	// 6) compare identical counter to counters of sets, counter equaling size of either set gives which set is the larger/smaller
+	if (counter_identical == S.counter) {
 		return std::partial_ordering::greater; 
 	}
-
-	// 7) if this is smaller than S -> less
-	if (this_ptr != tail) {
+	else if(counter_identical == counter) {
 		return std::partial_ordering::less;
 	}
-
-	// 8) sets are qeuivalent if above tests fail 
-	return std::partial_ordering::equivalent; 
-
+	
+	// 7) if all tests above fail, sets are not comparable 
+	return std::partial_ordering::unordered;
 }
 
 /*
@@ -225,6 +248,32 @@ std::partial_ordering Set::operator<=>(const Set& S) const {
  */
 Set& Set::operator+=(const Set& S) {
 	// IMPLEMENT
+
+	Node* s_ptr = S.head->next; 
+	Node* this_ptr = head->next; 
+
+	// 1) iterate S
+	while (s_ptr != S.tail) {
+		
+		// 2) if end of this is reached or s value smaller than this value, insert in this before this_ptr = this_ptr.prev since 
+		// insert_node inserts after inout pointer 
+		if (this_ptr == tail || s_ptr->value < this_ptr->value) {
+			
+			insert_node(this_ptr->prev, s_ptr->value);
+			s_ptr = s_ptr->next; 
+		}
+		// 3) if this value smaller than s, wait for case s < this for insertion, by stepping forth in this
+		else if (s_ptr->value > this_ptr->value) {
+			
+			this_ptr = this_ptr->next;
+		}
+		// 4) if this value and s value are same, step forth in both sets, doing nothing
+		else { 
+			this_ptr = this_ptr->next;
+			s_ptr = s_ptr->next;
+		}
+	}
+
 	return *this;
 }
 
@@ -234,6 +283,36 @@ Set& Set::operator+=(const Set& S) {
  */
 Set& Set::operator*=(const Set& S) {
 	// IMPLEMENT
+
+	Node* this_ptr = head->next; 
+	Node* s_ptr = S.head->next; 
+
+	// 1) loop sets
+	while (s_ptr != S.tail && this_ptr != tail) {
+
+		// 2) if this < s, step forth in this and remove this since it is not found in s
+		if (this_ptr->value < s_ptr->value) {
+			this_ptr = this_ptr->next; 
+			remove_node(this_ptr->prev); 
+		}
+		// 3) if s > this, s is not in this -> step forth in s
+		else if (this_ptr->value > s_ptr->value) {
+			s_ptr = s_ptr->next; 
+		}
+		// 4) if s==this, step forth in both sets 
+		else {
+			this_ptr = this_ptr->next; 
+			s_ptr = s_ptr->next; 
+		}
+	}
+
+	// 5) empty remaining elements in this if this > S
+	while (this_ptr != tail) {
+		this_ptr = this_ptr->next; 
+		remove_node(this_ptr->prev); 
+	}
+
+
 	return *this;
 }
 
@@ -243,6 +322,31 @@ Set& Set::operator*=(const Set& S) {
  */
 Set& Set::operator-=(const Set& S) {
 	// IMPLEMENT
+
+	Node* this_ptr = head->next; 
+	Node* s_ptr = S.head->next; 
+
+	// 1) loop the sets 
+	while (this_ptr != tail && s_ptr != S.tail) {
+
+		// 2) if this < S or this > S, move forth on set with smaller element 
+		if (this_ptr->value < s_ptr->value) {
+			this_ptr = this_ptr->next; 
+		}
+		else if (this_ptr->value > s_ptr->value) {
+			s_ptr = s_ptr->next; 
+		}
+		// 3) if values are the same, step forth and remove from this
+		else {
+			this_ptr = this_ptr->next; 
+			s_ptr = s_ptr->next;
+
+			remove_node(this_ptr->prev); 
+
+		}
+	}
+
+
 	return *this;
 }
 
@@ -255,8 +359,6 @@ Set& Set::operator-=(const Set& S) {
   * Insert a new Node storing val after the Node pointed by p
   * \param p pointer to a Node
   * \param val value to be inserted  after position p
-  *
-  * used by insert_value
   */
 void Set::insert_node(Node* p, int val) {
 	// IMPLEMENT before Lab2 HA
@@ -298,7 +400,7 @@ void Set::remove_node(Node* p) {
 	// 3) delete p 
 	delete p;
 
-	//decrement the counter 
+	// 4) decrement the counter 
 	--counter;
 }
 
@@ -322,29 +424,3 @@ void Set::write_to_stream(std::ostream& os) const {
 }
 
 
-/*
-* Aux-functions
-*/
-
-//to convert and insert a singleton 
-void Set::insert_value(int val) {
-
-	// Find the position to insert the value
-	Node* ptr = head;
-	while (ptr->next != tail && ptr->next->value < val) {
-		ptr = ptr->next;
-	}
-
-	// Insert the value using insert_node function
-	if (ptr->next == tail || ptr->next->value > val) {
-		insert_node(ptr, val);
-	}
-
-}
-
-//operator <=
-bool operator<= (const Set& S1, const Set& S2) {
-
-	//returns true if <=> returns less or equal for S1=this
-	return(S1 <=> S2) != std::partial_ordering::greater;
-}

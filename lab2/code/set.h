@@ -193,16 +193,5 @@ private:
     friend Set operator-(Set S1, const Set& S2) {
         return (S1 -= S2);
     }
-
-
-    /*
-    * Aux-function to initialize a new node
-    */
-    void insert_value(int val); 
-
-    /*
-    * operators <=, >=, <, >, != and == using <=> 
-    */
-
-    friend bool operator<= (const Set& S1, const Set& S2); 
+  
 };
