@@ -11,7 +11,7 @@ function(enable_warnings target)
             /w44388             # eneble 'signed/unsigned mismatch' '(off by default)
             /we4715             # turn 'not all control paths return a value' into a compile error
             /permissive-        # Stick to the standard
-			/fsanitize=address  # Enable the Address Sanatizer, helps finding bugs at runtime
+			#/fsanitize=address  # Enable the Address Sanatizer, helps finding bugs at runtime
             >
         $<$<CXX_COMPILER_ID:AppleClang,Clang,GNU>:-Wall -Wextra>
     )
